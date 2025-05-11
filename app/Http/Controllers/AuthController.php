@@ -19,15 +19,15 @@ class AuthController extends Controller
         $checkUser = User::whereRaw('LOWER(name) LIKE ?', [strtolower($request->name)])->first();
         $checkEmail = User::whereRaw('LOWER(email) LIKE ?', [strtolower($request->email)])->first();
         if ($checkUser) {
-            return response()->json(['status' => 'error', 'message' => 'The Name is already taken. Please choose another one'], 409);
+            return response()->json(['message' => 'The Name is already taken. Please choose another one'], 409);
         }
         if ($checkEmail) {
-            return response()->json(['status' => 'error', 'message' => 'The Email is already taken'], 409);
+            return response()->json(['message' => 'The Email is already taken'], 409);
         }
         $user = User::create($fields);
         $token = $user->createToken($user->name);
 
-        return response()->json(['info' => $user, 'token' => $token], 201);
+        return response()->json(['user' => $user, 'token' => $token], 201);
     }
 
         public function login(Request $request)
@@ -49,7 +49,7 @@ class AuthController extends Controller
         $token = $user->createToken($user->name);
 
         return [
-            'info' => $user,
+            'user' => $user,
             'token' => $token,
         ];
     }
