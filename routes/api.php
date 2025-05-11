@@ -2,9 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\RatingController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 
 //Auth Routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -19,3 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/recipes/{id}', [RecipeController::class, 'update']);
     Route::delete('/recipes/{id}', [RecipeController::class, 'destroy']);
 });
+
+
+Route::post('/recipes/{recipe}/ratings', [RatingController::class, 'store']);
+Route::post('/recipes/{recipe}/comments', [CommentController::class, 'store']);
