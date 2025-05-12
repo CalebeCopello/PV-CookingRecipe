@@ -1,61 +1,510 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# API de Receitas
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Esta API permite o registro de usuários, autenticação via token, criação e exibição de receitas, avaliações e comentários.
 
-## About Laravel
+## Tecnologias
+- Laravel 12
+- Sanctum para autenticação
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Instalação 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. Clone o repositório do GitHub
+```shell
+git clone https://github.com/CalebeCopello/PV-CookingRecipe.git
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. Move-se para o diretório do repositório
+```shell
+cd PV-CookingRecipe/
+```
 
-## Learning Laravel
+3. Instale as dependências do `composer`
+```shell
+composer install
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+4. Faça um `.env` a partir do exemplo do arquivo `.env.example`
+```shell
+cp .env.example .env
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+5. Configure o arquivo `.env` com as informações do banco de dados
+```
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=PVCR
+DB_USERNAME=calebe
+DB_PASSWORD=123456
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+6. Rode os scripts de migration
+```shell
+php artisan migrate
+```
 
-## Laravel Sponsors
+**Opcional**
+7. Rode as Factories para dar seed no banco de dados
+```shell
+php artisan db:seed
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+8. Rode a API
+```
+php artisan serve
+```
+## Rotas
 
-### Premium Partners
+|Método|Endpoint|Autenticado|Descrição|
+|---|---|---|---|
+|POST|`/api/register`|❌|Registrar usuário|
+|POST|`/api/login`|❌|Fazer login|
+|DELETE|`/api/logout`|✅|Logout|
+|GET|`/recipes`|✅|Listar receitas do usuário|
+|GET|`/recipes/{id}`|✅|Ver receita específica do usuário|
+|POST|`/recipes`|✅|Criar receita|
+|PUT|`/recipes/{id}`|✅|Atualizar receita|
+|DELETE|`/recipes/{id}`|✅|Deletar receita|
+|POST|`/recipes/{id}/ratings`|❌|Avaliar receita|
+|POST|`/recipes/{id}/comments`|❌|Comentar receita|
+|GET|`/recipe/{id}`|❌|Exibir receita pública|
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development/)**
-- **[Active Logic](https://activelogic.com)**
+### Autenticação
+#### POST /api/register
 
-## Contributing
+Rota utilizada para registo de usuário. 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Requisitos**: `json` contendo valores `name` `email` `password`
+```json
+{
+	"name": "name",
+	"email": "a@b.com",
+	"password": "123456"
+}
+```
 
-## Code of Conduct
+**Resposta de sucesso (201)**: um `json` contando informações sobre o registro do usuário, assim como um token de autenticação
+```json
+{
+    "user": {
+        "name": "name",
+        "email": "a@b.com",
+        "updated_at": "2025-05-10T07:25:28.000000Z",
+        "created_at": "2025-05-10T07:25:28.000000Z",
+        "id": 1
+    },
+    "token": {
+        "accessToken": {
+            "name": "name",
+            "abilities": [
+                "*"
+            ],
+            "expires_at": null,
+            "tokenable_id": 1,
+            "tokenable_type": "App\\Models\\User",
+            "updated_at": "2025-05-10T07:25:28.000000Z",
+            "created_at": "2025-05-10T07:25:28.000000Z",
+            "id": 1
+        },
+        "plainTextToken": "1|FjckgKL6azbgeE2qY2O8HT5yAAUwf5H1wC83UAF6587bfdae"
+    }
+}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Resposta de erro (422)**: Caso algum campo não seja preenchido:
 
-## Security Vulnerabilities
+```json
+{
+    "message": "The name field is required. (and 1 more error)",
+    "errors": {
+        "name": [
+            "The name field is required."
+        ],
+        "email": [
+            "The email field is required."
+        ]
+    }
+}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Resposta de erro (409)**: Caso nome de usuário ou e-mail já esteja sendo utilizado:
 
-## License
+```json
+{
+    "message": "The Name is already taken. Please choose another one"
+}
+```
+#### POST /api/login
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Rota utilizada para logar usuário. Requisitos: `json` contendo valores `email` `password`
+```json
+{
+	"email": "a@b.com",
+	"password": "123456"
+}
+```
+
+**Resposta de sucesso (200)**: um `json` contando informações sobre o registro do usuário, assim como um token de autenticação
+```json
+{
+    "user": {
+        "name": "name",
+        "email": "a@b.com",
+        "updated_at": "2025-05-10T07:25:28.000000Z",
+        "created_at": "2025-05-10T07:25:28.000000Z",
+        "id": 1
+    },
+    "token": {
+        "accessToken": {
+            "name": "name",
+            "abilities": [
+                "*"
+            ],
+            "expires_at": null,
+            "tokenable_id": 1,
+            "tokenable_type": "App\\Models\\User",
+            "updated_at": "2025-05-10T07:25:28.000000Z",
+            "created_at": "2025-05-10T07:25:28.000000Z",
+            "id": 1
+        },
+        "plainTextToken": "1|FjckgKL6azbgeE2qY2O8HT5yAAUwf5H1wC83UAF6587bfdae"
+    }
+}```
+
+**Resposta de erro (422)**: Caso algum campo não seja preenchido:
+
+```json
+{
+    "message": "The email field is required.",
+    "errors": {
+        "email": [
+            "The email field is required."
+        ]
+    }
+}
+```
+
+**Resposta de erro (401)**: Caso email ou senha incorretos:
+
+```json
+{
+    "message": "Invalid Email or Password."
+}
+```
+
+#### DELETE /api/logout
+Rota protegida para deslogar usuário. 
+
+**Requisitos**: o HTTP request deve ser feito utilizando um header de `Authorization: Bearer` contando um token de autenticação
+
+**Resposta de sucesso (200)**: um `json` resposta
+```json
+{
+	"message": "You have logged out."
+}
+```
+
+
+**Resposta de erro (401)**: 
+```json
+{
+    "message": "Unauthenticated."
+}
+```
+
+### Endpoints autenticados
+
+#### GET /recipes
+
+**Rota protegida** para fetch receitas do usuário. 
+
+**Requisitos**: o HTTP request deve ser feito utilizando um header de `Authorization: Bearer` contando um token de autenticação
+
+**Opcional**: `json` contendo valor `order` com opção: `asc` para ordem ascendente ou `desc` para ordem  descendente (escolha padrão)
+
+```json
+{
+    "order": "asc"
+}
+```
+
+**Resposta de sucesso (200)**: um array contendo informações sobre as receitas enviadas pelo usuário
+
+```json
+[
+    {
+        "id": 75,
+        "user_id": 1,
+        "title": "Bolo de Cenoura",
+        "description": "Versão sem cobertura",
+        "ingredients": "cenoura, ovos, farinha, açúcar",
+        "instructions": "Misture e asse por 35 minutos.",
+        "deleted_at": null,
+        "created_at": "2025-04-05T00:00:00.000000Z",
+        "updated_at": "2025-05-06T00:00:00.000000Z"
+    },
+]
+```
+
+**Resposta de erro (404)**: Caso o usuário não tenha nenhum receita registrada:
+```json
+{
+    "message": "No recipes found"
+}
+```
+
+#### GET /recipes/{id}
+
+**Rota protegida** para fetch receita do usuário. 
+
+**Requisitos**: o HTTP request deve ser feito utilizando um header de `Authorization: Bearer` contando um token de autenticação
+
+**Resposta de sucesso (200)**: um `json` contendo informações sobre a receita enviada pelo usuário
+
+```json
+{
+        "id": 75,
+        "user_id": 1,
+        "title": "Bolo de Cenoura",
+        "description": "Versão sem cobertura",
+        "ingredients": "cenoura, ovos, farinha, açúcar",
+        "instructions": "Misture e asse por 35 minutos.",
+        "deleted_at": null,
+        "created_at": "2025-04-05T00:00:00.000000Z",
+        "updated_at": "2025-05-06T00:00:00.000000Z"
+},
+```
+
+**Resposta de erro (404)**: Caso o usuário não tenha a receita registrada:
+```json
+{
+    "message": "Recipe not found"
+}
+```
+
+#### POST /recipes
+
+**Rota protegida**
+
+**Requisitos**: o HTTP request deve ser feito utilizando um header de `Authorization: Bearer` contando um token de autenticação. Um `json` com as informações `title` `description` `ingredients` `instructions`
+
+```json
+{
+    "title": "Bolo de Cenoura",
+    "description": "Versão sem cobertura",
+    "ingredients": "cenoura, ovos, farinha, açúcar",
+    "instructions": "Misture e asse por 35 minutos."
+}
+```
+
+**Resposta de sucesso (201)**: um `json` contendo informações sobre a receita enviada pelo usuário
+
+```json
+{
+    "message": "Recipe created successfully.",
+    "recipe": {
+        "title": "Bolo de Cenoura",
+        "description": "Versão sem cobertura",
+        "ingredients": "cenoura, ovos, farinha, açúcar",
+        "instructions": "Misture e asse por 35 minutos.",
+        "user_id": 1,
+        "updated_at": "2025-05-10T22:31:28.000000Z",
+        "created_at": "2025-05-10T22:31:28.000000Z",
+        "id": 105
+    }
+}
+```
+
+**Resposta de erro (422)**:  Caso algum campo não seja preenchido:
+```json
+{
+    "message": "The ingredients field is required. (and 1 more error)",
+    "errors": {
+        "ingredients": [
+            "The ingredients field is required."
+        ],
+        "instructions": [
+            "The instructions field is required."
+        ]
+    }
+}
+```
+
+#### PUT /recipes/{id}
+
+**Rota protegida**
+
+**Requisitos**: o HTTP request deve ser feito utilizando um header de `Authorization: Bearer` contando um token de autenticação. Um `json` com as informações `title` `description` `ingredients` `instructions`
+
+**Resposta de sucesso (201)**: um `json` contendo informações sobre a receita enviada pelo usuário
+
+```json
+{
+    "message": "Recipe updated successfully.",
+    "recipe": {
+        "title": "Bolo de Cenoura",
+        "description": "Versão sem cobertura",
+        "ingredients": "cenoura, ovos, farinha, açúcar",
+        "instructions": "Misture e asse por 35 minutos.",
+        "user_id": 1,
+        "updated_at": "2025-05-10T22:31:28.000000Z",
+        "created_at": "2025-05-10T22:31:28.000000Z",
+        "id": 105
+    }
+}
+```
+
+**Resposta de erro (404)**: Caso o usuário não tenha a receita registrada:
+```json
+{
+    "message": "Recipe not found"
+}
+```
+
+**Resposta de erro (422)**:  Caso algum campo não seja preenchido:
+```json
+{
+    "message": "The ingredients field is required. (and 1 more error)",
+    "errors": {
+        "ingredients": [
+            "The ingredients field is required."
+        ],
+        "instructions": [
+            "The instructions field is required."
+        ]
+    }
+}
+```
+
+#### DELETE /recipes/{id}
+
+**Rota protegida** para fetch receita do usuário. 
+
+**Requisitos**: o HTTP request deve ser feito utilizando um header de `Authorization: Bearer` contando um token de autenticação
+
+**Resposta de sucesso (200)**: um `json` contendo mensagem sobre a receita deletada pelo usuário
+```json
+{
+    "message": "Recipe deleted successfully."
+}
+```
+
+**Resposta de erro (404)**: Caso o usuário não tenha a receita registrada:
+```json
+{
+    "message": "Recipe not found"
+}
+```
+
+
+### Endpoints públicos
+
+#### POST /recipes/{id}/ratings
+
+Rota utilizada para registro de avaliação. 
+
+**Requisitos**: `json` contendo valor `rating` de 0 ate 5.
+
+```json
+{
+    "rating": 1
+}
+```
+
+**Resposta de sucesso (200)**: caso o valor seja registrado com sucesso ha um `json` de retorno
+
+```json
+{
+    "message": "Rating stored successfully."
+}
+```
+
+**Resposta de erro (422)**: Caso o seja maior que 5 ou menor que 1:
+```json
+{
+    "message": "The rating field must not be greater than 5.",
+    "errors": {
+        "rating": [
+            "The rating field must not be greater than 5."
+        ]
+    }
+}
+```
+
+**Resposta de erro (404)**:  caso o id da receita não exista.
+
+#### POST /recipes/{id}/comments
+
+Rota utilizada para registo comentário de usuário. 
+
+**Requisitos**: `json` contendo os valores `author` e `content`.
+
+```json
+{
+    "author": "teste",
+    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut nunc hendrerit, elementum mauris ut, vehicula est. Mauris maximus lectus nibh, nec euismod ex scelerisque vel. Sed ultricies mattis quam, nec lacinia ante varius at. Phasellus vehicula congue sapien eget elementum. Sed ut sem elit. Vivamus luctus quis felis et luctus. Vestibulum tempor accumsan nunc, eu fringilla leo condimentum ut. "
+}
+```
+
+**Resposta de sucesso (200)**: caso o valor seja registrado com sucesso ha um `json` de retorno
+
+```json
+{
+    "message": "Comment created successfully."
+}
+```
+
+**Resposta de erro (422)**: Caso o valor de `author` seja maior de 150 caracteres ou `content` seja maior de 700 caracteres:
+```json
+{
+    "message": "The content field must not be greater than 700 characters.",
+    "errors": {
+        "content": [
+            "The content field must not be greater than 700 characters."
+        ]
+    }
+}
+```
+
+**Resposta de erro (404)**:  caso o id da receita não exista.
+
+### Exibição de receitas
+
+#### GET /recipe/{id}
+
+Rota utilizada para exibir informações sobre uma receita.
+
+**Resposta de sucesso (200)**: caso exista a receita com determinada id ha um `array` de retorno
+
+```json
+[
+    {
+        "id": 9,
+        "title": "A quaerat labore error a.",
+        "description": "Occaecati soluta magni quos.",
+        "avarage_rating": "2.9",
+        "ratings": [
+            {
+                "id": 47,
+                "rating": 4
+            },
+        ],
+        "comments": [
+            {
+                "id": 108,
+                "author": "Chasity Mills",
+                "comment": "Natus cum ab aut totam est aspernatur iste sed.",
+                "created_at": "2025-05-11 01:59:50"
+            },
+        ]
+    }
+]
+```
+
+**Resposta de erro (404)**:  caso o id da receita não exista.
+
+```json
+{
+    "message": "Recipe not found."
+}
+```
