@@ -81,4 +81,34 @@ class RecipeController extends Controller
         $recipe->delete();
         return response()->json(['message' => 'Recipe deleted successfully.']);
     }
+
+    public function showInfo($id)
+    {
+        $recipe = Recipe::with(['comments', 'ratings'])->find($id);
+        if (!$recipe) {
+            return response()->json(['message' => 'Recipe not found.'], 404);
+        }
+        $average = number_format($recipe->ratings()->avg('rating'), 1, '.', '');
+        $return = [
+            'id' => $recipe->id,
+            'title' => $recipe->title,
+            'description' => $recipe->description,
+            'avarage_rating' => $average,
+            'ratings' => $recipe->ratings->map(function ($rating) {
+                return [
+                    'id' => $rating->id,
+                    'rating' => $rating->rating,
+                ];
+            }),
+            'comments' => $recipe->comments->map(function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'author' => $comment->author,
+                    'comment' => $comment->content,
+                    'created_at' => $comment->created_at->toDateTimeString(),
+                ];
+            }),
+        ];
+        return response()->json([$return]);
+    }
 }
