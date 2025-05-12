@@ -93,7 +93,7 @@ class RecipeController extends Controller
             'id' => $recipe->id,
             'title' => $recipe->title,
             'description' => $recipe->description,
-            'avarage_rating' => $average,
+            'average_rating' => $average,
             'ratings' => $recipe->ratings->map(function ($rating) {
                 return [
                     'id' => $rating->id,

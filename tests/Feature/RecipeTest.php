@@ -179,14 +179,14 @@ class RecipeTest extends TestCase
                 'id' => $recipe->id,
                 'title' => 'Spaghetti',
                 'description' => 'Classic Italian pasta',
-                'avarage_rating' => '4.5',
+                'average_rating' => '4.5',
             ])
             ->assertJsonStructure([
                 [
                     'id',
                     'title',
                     'description',
-                    'avarage_rating',
+                    'average_rating',
                     'ratings' => [['id', 'rating']],
                     'comments' => [['id', 'author', 'comment', 'created_at']],
                 ]

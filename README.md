@@ -1,4 +1,4 @@
-# API de Receitas
+# API - Cooking Recipes
 
 Esta API permite o registro de usuários, autenticação via token, criação e exibição de receitas, avaliações e comentários.
 
@@ -13,7 +13,7 @@ Esta API permite o registro de usuários, autenticação via token, criação e 
 git clone https://github.com/CalebeCopello/PV-CookingRecipe.git
 ```
 
-2. Move-se para o diretório do repositório
+2. Acesse o diretório do repositório
 ```shell
 cd PV-CookingRecipe/
 ```
@@ -52,7 +52,7 @@ php artisan migrate
 **Opcional**
 8. Rode as Factories para dar seed no banco de dados
 ```shell
-php php artisan migrate:refresh && artisan db:seed
+php artisan migrate:refresh && artisan db:seed
 ```
 
 9. Rode a API
@@ -78,7 +78,7 @@ php artisan serve
 ### Autenticação
 #### POST /api/register
 
-Rota utilizada para registo de usuário. 
+Rota utilizada para registro de usuário. 
 
 **Requisitos**: `json` contendo valores `name` `email` `password`
 ```json
@@ -408,7 +408,7 @@ Rota protegida para deslogar usuário.
 
 #### POST /recipes/{id}/ratings
 
-Rota utilizada para registro de avaliação. 
+Rota usada para registrar avaliações. 
 
 **Requisitos**: `json` contendo valor `rating` de 0 ate 5.
 
@@ -418,7 +418,7 @@ Rota utilizada para registro de avaliação.
 }
 ```
 
-**Resposta de sucesso (200)**: caso o valor seja registrado com sucesso ha um `json` de retorno
+**Resposta de sucesso (200)**: caso registrado com sucesso, será retornado um `json` de confirmação
 
 ```json
 {
@@ -489,7 +489,7 @@ Rota utilizada para exibir informações sobre uma receita.
         "id": 9,
         "title": "A quaerat labore error a.",
         "description": "Occaecati soluta magni quos.",
-        "avarage_rating": "2.9",
+        "average_rating": "2.9",
         "ratings": [
             {
                 "id": 47,
