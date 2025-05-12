@@ -44,12 +44,18 @@ php artisan migrate
 ```
 
 **Opcional**
-7. Rode as Factories para dar seed no banco de dados
+7. Rode os testes automatizados
 ```shell
-php artisan db:seed
+	php artisan migrate:refresh && php artisan test
 ```
 
-8. Rode a API
+**Opcional**
+8. Rode as Factories para dar seed no banco de dados
+```shell
+php php artisan migrate:refresh && artisan db:seed
+```
+
+9. Rode a API
 ```
 php artisan serve
 ```
