@@ -51,7 +51,7 @@ php artisan migrate
 **Opcional**
 8. Rode os testes automatizados
 ```shell
-	php artisan migrate:refresh && mkdir ./tests/Unit && php artisan test
+php artisan migrate:refresh && mkdir ./tests/Unit && php artisan test
 ```
 
 **Opcional**
