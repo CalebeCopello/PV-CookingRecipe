@@ -169,7 +169,8 @@ Rota utilizada para logar usuário. Requisitos: `json` contendo valores `email` 
         },
         "plainTextToken": "1|FjckgKL6azbgeE2qY2O8HT5yAAUwf5H1wC83UAF6587bfdae"
     }
-}```
+}
+```
 
 **Resposta de erro (422)**: Caso algum campo não seja preenchido:
 
