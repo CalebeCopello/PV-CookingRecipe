@@ -38,24 +38,29 @@ DB_USERNAME=calebe
 DB_PASSWORD=123456
 ```
 
-6. Rode os scripts de migration
+6. Rode o caching das configurações
+```shell
+php artisan optimize
+```
+
+7. Rode os scripts de migration
 ```shell
 php artisan migrate
 ```
 
 **Opcional**
-7. Rode os testes automatizados
+8. Rode os testes automatizados
 ```shell
 	php artisan migrate:refresh && php artisan test
 ```
 
 **Opcional**
-8. Rode as Factories para dar seed no banco de dados
+9. Rode as Factories para dar seed no banco de dados
 ```shell
 php artisan migrate:refresh && artisan db:seed
 ```
 
-9. Rode a API
+10. Rode a API
 ```
 php artisan serve
 ```
