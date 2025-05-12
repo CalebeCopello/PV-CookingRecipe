@@ -51,13 +51,13 @@ php artisan migrate
 **Opcional**
 8. Rode os testes automatizados
 ```shell
-	php artisan migrate:refresh && php artisan test
+	php artisan migrate:refresh && mkdir ./tests/Unit && php artisan test
 ```
 
 **Opcional**
 9. Rode as Factories para dar seed no banco de dados
 ```shell
-php artisan migrate:refresh && artisan db:seed
+php artisan migrate:refresh  && php artisan db:seed
 ```
 
 10. Rode a API
