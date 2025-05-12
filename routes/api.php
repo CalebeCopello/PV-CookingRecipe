@@ -24,3 +24,4 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/recipes/{recipe}/ratings', [RatingController::class, 'store']);
 Route::post('/recipes/{recipe}/comments', [CommentController::class, 'store']);
+Route::get('/recipe/{id}', [RecipeController::class, 'showInfo']);
